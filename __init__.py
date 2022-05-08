@@ -28,11 +28,13 @@ def create_app():
     login_manager = LoginManager()
     # login_manager.session_protection = "strong"
     login_manager.login_view = "auth.login"
+    # login_manager.refresh_view()
     login_manager.init_app(app)
     # login_manager.login_message_category = "info"
 
     @login_manager.user_loader
     def load_user(user_id):
         return User.query.get(user_id)
+
 
     return app

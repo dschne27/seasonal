@@ -52,7 +52,7 @@ def signup_post():
     user = User.query.filter_by(email=email).first()
 
     if user:
-        flash("You already have an account with this email!")
+        flash(u"You already have an account with this email!")
         return redirect(url_for('auth.login'))
     else:
         reg_user = User(name = form['name'], email=form['email'], password_hash=generate_password_hash(form["password_hash"]))
@@ -68,5 +68,8 @@ def sign_up():
     return render_template('registration.html', form=form)
 
 @auth.route('/logout')
+@login_required
 def logout():
+    logout_user()
+    flash("Logged out successfully!")
     return redirect(url_for('main.index'))

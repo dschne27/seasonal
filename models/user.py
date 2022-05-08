@@ -24,6 +24,7 @@ class User(db.Model, UserMixin):
     date_added = db.Column(db.DateTime, default = datetime.utcnow)
     location  = db.Column(db.String(200))
     password_hash = db.Column(db.String(128))
+    
 
     # @property
     # def password(self):
@@ -37,3 +38,12 @@ class User(db.Model, UserMixin):
 
     def get_name(self):
         return self.name
+
+class Watch(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    name = db.Column(db.String(200), nullable=False)
+    location  = db.Column(db.String(200))
+
+# class Veg(db.Model):
+
+

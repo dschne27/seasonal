@@ -2,4 +2,20 @@
     {{message}}
 {% endfor %}
 
-<h1>You made it</h1>
+{% extends "navbar.html" %}
+
+{% block content %}
+
+    <div>
+        <h1>Hello, {{ name }}</h1>\
+        <form action="{{ url_for('auth.logout') }}">
+            <button>Logout</button>
+        </form>
+
+    </div>
+
+    <h3>
+        Is {{ location }} your current location?
+    </h3>
+
+{% endblock %}
