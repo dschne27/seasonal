@@ -7,7 +7,7 @@ from attr import validate
 from flask_login import UserMixin
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import create_engine, Integer, Column, String, DateTime, text
+from sqlalchemy import ForeignKey, create_engine, Integer, Column, String, DateTime, text
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from ..extensions import db
@@ -24,6 +24,7 @@ class User(db.Model, UserMixin):
     date_added = db.Column(db.DateTime, default = datetime.utcnow)
     location  = db.Column(db.String(200))
     password_hash = db.Column(db.String(128))
+    watching = db.relationship('Watch', backref='voi')
     
 
     # @property
@@ -40,10 +41,22 @@ class User(db.Model, UserMixin):
         return self.name
 
 class Watch(db.Model):
+
+    __tablename__ = 'watch'
+
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(200), nullable=False)
     location  = db.Column(db.String(200))
+    veg_id = db.Column(db.Integer, db.ForeignKey('veg.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('usernames.id'))
 
-# class Veg(db.Model):
 
 
+class Veg(db.Model):
+
+    __tablename__ = 'veg'
+
+    id = db.Column(db.Integer, primary_key = True)
+    name = db.Column(db.String(200))
+    status = db.Column(db.String(200))
+    interest = db.relationship('Watch', backref='vegetable')

@@ -1,4 +1,5 @@
-from flask import Blueprint, render_template, flash
+from crypt import methods
+from flask import Blueprint, render_template, flash, request
 from flask_login import current_user, login_required
 from numpy import full
 from pandas import concat
@@ -13,32 +14,57 @@ def index():
 
     return render_template('index.html')
 
-@main.route('/home')
+@main.route('/home', methods=['GET', 'POST'])
 @login_required
 def home():
     # message = "welcome {}".format(current_user.name)
     # flash(message)
+    full_loc = None
 
     def location():
-
-        full_loc = None
 
         URL = "http://ip-api.com/json/"
         loc = requests.get(URL)
         data = loc.json()  
         city = data["city"]
         reg_name = data["regionName"]
-        country = data["country"]
+        # country = data["country"]
 
-        full_loc = city + ", " + reg_name + ", " + country
+        full_loc = city + ", " + reg_name
 
         return full_loc
 
     full_loc = location()
 
-    return render_template('home.html', name=current_user.name, location=full_loc)
+    if request.method == "POST":
+        user = User.query.filter_by(id=current_user.id).first()
+        if request.form:
+            loc = request.form['geocomplete']
+            user.location = loc
+            db.session.commit()
+            return render_template('home.html', location=full_loc)
+        user.location = full_loc
+        db.session.commit()
+        return render_template('home.html', location=full_loc)
+    else:
+        return render_template('home.html', location=full_loc)
 
+# @main.route('/home', methods=['POST'])
 # @login_required
-# def set_loc():
+# def edit_loc():
+#     user = User.query.filter_by(id=current_user.id).first()
+#     loc = request.form['geocomplete']
+#     user.location = loc
+#     db.session.commit()
+
+#     return render_template('home.html', location_in=loc)
+
+@main.route('/profile')
+@login_required
+def load_profile():
+
+
+    return render_template('dashboard.html')
+
 
 
